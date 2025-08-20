@@ -1,0 +1,45 @@
+{
+  "activation": {
+    "issuerName": "ACBank",
+    "userID": "{userID}",
+    "userName": "userName 240701",
+    "customerName": "customerName 240701",
+    "customerTypeID": 1,
+    "cifNumber": "0000000000000002",
+    "phoneNumber": "0398448844",
+    "email": "test1001@gmail.com",
+    "branchID": "001",
+    "aidVersion": "99"
+  },
+  "create_transaction": {
+    "issuerName": "ACBank",
+    "userID": "{user_id}",
+    "transactionID": "{transaction_id}",
+    "transactionTypeID": 1,
+    "transactionData": "{transaction_id}|818794922918113218389848863|TRAN THI THANH KIEU - 1234567890123456789|1585456000|VND",
+    "challenge": "",
+    "callbackUrl": "",
+    "authTypeID": 1,
+    "isOnline": 0,
+    "isPush": 1,
+    "notification": {
+      "title": "Test_title",
+      "body": "Test_body"
+    },
+    "eSignerTypeID": 12,
+    "channelID": 0
+  },
+  "otp": {
+    "issuerName": "Keypass",
+    "userID": "{user_id}",
+    "otp": "00{otp}",
+    "transactionID": "{transaction_id}"
+  },
+  "otpcr": {
+    "issuerName": "Keypass",
+    "userID": "{user_id}",
+    "otp": "09{otp}",
+    "transactionID": "{transaction_id}"
+  }
+}
+

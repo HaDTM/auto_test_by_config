@@ -1,0 +1,37 @@
+{
+  "bank_name": "Keypass",
+  "activation_code_url":"https://192.168.0.112:8445/keypass.ws.tpb/getActivationCode",
+  "otp_basic_url": "https://192.168.0.112:8445/keypass.ws.tpb/verifyOTP",
+  "otp_advance_url": "https://192.168.0.112:8445/keypass.ws.tpb/verifyOTPCR",
+  "transaction_url": "https://192.168.0.112:8445/keypass.ws.tpb/createTransaction",
+  "requires_basic_auth": false,
+  "auth_user": "user1",
+  "auth_password": "p@ssw0rd#2025",
+  "element_ids": {
+        "choose_vn_lang_button":"vn.mk.tpbank.v2.softtoken:id/lang_txtSelectVN",
+        "agree_button":"vn.mk.tpbank.v2.softtoken:id/top_btnRight",
+        "activation_code_input_xpath":"vn.mk.tpbank.v2.softtoken:id/active_txtCode",
+        "continue_button":"com.hdbank.dihdbank:id/dialog_btnPositive",
+        "number_pin_button_xpath":"//android.widget.TextView[@text='{digit}']",
+        "basic_tab_button": "vn.mk.tpbank.v2.softtoken:id/otp_btnBasic",
+        "advance_tab_button": "vn.mk.tpbank.v2.softtoken:id/otp_btnAdvance",
+        "close_popup_button":"vn.mk.tpbank.v2.softtoken:id/dialog_imgX",
+        "otp_show":"vn.mk.tpbank.v2.softtoken:id/otp_txtCode",
+        "get_transaction_button":"vn.mk.tpbank.v2.softtoken:id/otp_btnRetrieve",
+        "setting_button":"vn.mk.tpbank.v2.softtoken:id/top_imgRight",
+        "back_button":"vn.mk.tpbank.v2.softtoken:id/top_btnLeft",
+        "sync_button":"vn.mk.tpbank.v2.softtoken:id/setting_txtSync",
+        "sync_confirm_button":"vn.mk.tpbank.v2.softtoken:id/dialog_txtPositive",
+        "change_pin_setting":"vn.mk.tpbank.v2.softtoken:id/setting_txtChangePass"
+  },
+  "desired_caps": {
+        "platformName": "Android",
+        "deviceName": "emulator-5554",
+        "automationName": "UiAutomator2",
+        "appPackage": "vn.mk.tpbank.v2.softtoken",
+        "appActivity": "vn.tpb.token.MainActivity",
+        "noReset": true,
+        "newCommandTimeout": 300
+        },
+  "timeout": 10
+}

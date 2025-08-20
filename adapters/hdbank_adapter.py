@@ -1,0 +1,270 @@
+import requests
+import time
+from requests.auth import HTTPBasicAuth
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from utils.device_utils import restart_app, update_app
+
+from payloads.build_activation_payload import build_activation_payload
+from payloads.build_payload_otp import build_otp_payload, build_otpcr_payload
+from payloads.build_payload_transaction import call_api_create_transaction,build_headers
+from selenium.common.exceptions import StaleElementReferenceException
+
+
+
+class HDBankAdapter:
+    def __init__(self, config):
+        self.config = config
+        self.driver = config["driver"]
+        caps = config["desired_caps"]
+        self.timeout = config["timeout"]
+
+    def activate(self, user_id):
+        print(f"[INFO] Nhập user ID: {user_id}")
+        self._set_element_text(self.config["element_ids"]["user_id_input"], user_id)
+
+        activation_code = self._fetch_activation_code(user_id)
+        if not activation_code:
+            print("[ERROR] Không lấy được mã kích hoạt.")
+            return  # Dừng lại, không nhập mã và không đặt PIN
+
+        print(f"[INFO] Nhập mã kích hoạt: {activation_code}")
+        self._input_activation_code(activation_code)
+
+        self._click(self.config["element_ids"]["continue_button"])
+
+        # Nếu cần: chờ confirm popup hoặc next screen rồi mới đặt PIN
+        # WebDriverWait(self.driver, self.timeout).until(
+        #     EC.presence_of_element_located((By.ID, self.config["element_ids"]["pin_screen_id"]))
+        # )
+        
+    def enter_pin(self,pin_code):
+        print("[INFO] Nhập PIN: 0000")
+        for digit in pin_code:
+            self._click_xpath(self.config["element_ids"]["number_pin_button_xpath"], digit)
+
+    def confirm_pin(self):
+        self._click(self.config["element_ids"]["set_pin_button"])
+
+    def _fetch_activation_code(self, user_id):
+        payload = build_activation_payload(self.config, user_id)
+        url = self.config["activation_code_url"]
+        headers = build_headers(self.config)
+        try:
+            response = requests.post(url, json=payload, headers=headers, verify=False, timeout=self.timeout)
+            response.raise_for_status()
+            return response.json().get("activationCode")
+        except Exception as e:
+            print(f"[ERROR] Gọi API kích hoạt thất bại: {e}")
+            return None
+
+
+    def _input_activation_code(self, activation_code):
+        for digit in activation_code:
+            self._click_xpath(self.config["element_ids"]["number_pin_button_xpath"], digit)
+
+    def choose_to_basic(self):
+        self._click(self.config["element_ids"]["user_name_button"])
+        self._click(self.config["element_ids"]["basic_tab_button"])
+    
+    def choose_to_advance(self):
+        self._click(self.config["element_ids"]["advance_tab_button"])
+
+    def get_otp_from_app(self):
+        print("[INFO] Đang lấy OTP từ giao diện app...")
+        raw_otp = self._get_element_text(self.config["element_ids"]["otp_show"])
+        print(f"[INFO] OTP nguyên bản: '{raw_otp}'")
+        otp_value = self._clean_otp(raw_otp)
+        print(f"[INFO] OTP sau xử lý: '{otp_value}'")
+        return otp_value
+    
+    def _clean_otp(self, raw_otp):
+        if not raw_otp:
+            return None
+        cleaned = raw_otp.replace(" ", "").strip()
+        if cleaned.isdigit() and len(cleaned) == 6:
+            return cleaned
+        print(f"[WARN] OTP không đúng định dạng: '{cleaned}'")
+        return None
+
+    def verify_otp(self, type, user_id, otp_input, transaction_id):
+        try:
+            if type == "basic":
+                url = self.config["otp_basic_url"]
+                payload = build_otp_payload( self.config, user_id, otp_input, transaction_id)
+            elif type == "cr":
+                url = self.config["otp_advance_url"]
+                payload = build_otpcr_payload( self.config,user_id, otp_input, transaction_id)
+            else:
+                raise ValueError("Loại OTP không hợp lệ.")
+            
+            headers = build_headers(self.config)
+            response = requests.post(url, json=payload, headers=headers, timeout=self.timeout, verify=False)
+            response.raise_for_status()
+            return response.json()
+        except Exception as e:
+            print(f"[ERROR] Xác thực OTP thất bại: {e}")
+            return {}
+
+    def create_transaction(self, user_id):
+        return call_api_create_transaction(self.config, user_id)
+
+    def sync_otp(self):
+        self._click(self.config["element_ids"]["setting_button"])
+        self._click(self.config["element_ids"]["sync_button"])
+        self._click(self.config["element_ids"]["sync_confirm_button"])
+        time.sleep(2)
+
+        status_text = self._get_element_text(self.config["sync_status_id"])
+        return self.config["success_keyword"] in status_text
+
+
+    def activation_flow(self, user_id):
+        self.activate(user_id)
+
+        self.enter_pin("0000")
+        self.enter_pin("0000")
+        self.confirm_pin()
+
+        self.choose_to_basic()
+        otp_basic = self.get_otp_from_app()
+        result_basic = self.verify_otp("basic", user_id, otp_basic, "00000000")
+        print(f"[RESULT] Xác thực OTP thường: {result_basic}")
+
+        transaction_id = self.create_transaction(user_id)
+
+        self.choose_to_advance()
+        otp_cr = self.get_otp_from_app()
+        print(f"[DEBUG] Transaction ID để xác thực nâng cao: {transaction_id}")
+        result_cr = self.verify_otp("cr", user_id, otp_cr, transaction_id)
+        print(f"[RESULT] Xác thực OTP nâng cao: {result_cr}")
+
+        return {
+            "otp_basic": result_basic,
+            "otp_advanced": result_cr,
+            "transaction_id": transaction_id
+        }
+
+    def login_flow(self, user_id):
+        self.enter_pin("0000")
+        print("Login với pin")
+        self.choose_to_basic()
+        otp_basic = self.get_otp_from_app()
+        result_basic = self.verify_otp("basic", user_id, otp_basic, "00000000")
+        print(f"[RESULT] Xác thực OTP thường: {result_basic}")
+
+        transaction_id = self.create_transaction(user_id)
+        if not transaction_id:
+            print("[WARNING] Không lấy được Transaction ID khi login.")
+
+        self.choose_to_advance()
+        otp_cr = self.get_otp_from_app()
+        print(f"[DEBUG] Transaction ID để xác thực nâng cao: {transaction_id}")
+        result_cr = self.verify_otp("cr", user_id, otp_cr, transaction_id)
+        print(f"[RESULT] Xác thực OTP nâng cao: {result_cr}")
+
+        status = self.sync_otp()
+        print(f"Tình trạng đồng bộ: {status}")
+
+        return {
+            "otp_basic": result_basic,
+            "otp_advanced": result_cr,
+            "transaction_id": transaction_id
+        }
+
+    def dispatch_flow(self, screen_name, user_id):
+        routes = {
+            "login": self.login_flow,
+            "register": self.activation_flow,
+            # có thể mở rộng: "update": self.update_user_info
+        }
+
+        if screen_name in routes:
+            print(f"[INFO] Bắt đầu luồng: {screen_name}")
+            return routes[screen_name](user_id)
+        else:
+            print(f"[WARN] Màn hình '{screen_name}' chưa có luồng xử lý.")
+            return None
+        
+# Hàm custom -> pending khi có yêu cầu nhé, lười vãi ò
+    def post_login_menu(self, user_id):
+        test_actions = [
+            ("Xác thực OTP thường", self.verify_otp),
+            ("Xác thực OTP nâng cao", self.verify_otp_cr),
+            ("Đồng bộ OTP", self.sync_otp)
+        ]
+
+        while True:
+            print("\n📋 Danh sách lệnh test:")
+            for i, (desc, _) in enumerate(test_actions, start=1):
+                print(f"{i}. {desc}")
+
+            cmd = input("\nNhập số để test (hoặc '0' để thoát): ").strip()
+
+            if cmd == "0":
+                print("🛑 Kết thúc test.")
+                break
+            elif cmd.isdigit() and 1 <= int(cmd) <= len(test_actions):
+                idx = int(cmd) - 1
+                print(f"🔧 Đang gọi: {test_actions[idx][0]}")
+                test_actions[idx][1](user_id)
+            else:
+                print("❌ Số không hợp lệ. Nhập lại hộ cái.")
+
+# Hàm restart app, có thể dùng trong các trường hợp cần thiết
+    def restart_app_from_config(self):
+        app_package = self.config["desired_caps"]["appPackage"]
+        restart_app(self.driver, app_package)
+
+
+
+    def test_upgrade_flow(self):
+        app_package = self.config["desired_caps"]["appPackage"]
+        apk_v1 = self.config["apk_v1_path"]
+        apk_v2 = self.config["apk_v2_path"]
+
+        update_app(apk_v1)
+        restart_app(self.driver, app_package)
+        self.login()
+        self.make_transaction()
+
+        update_app(apk_v2)
+        restart_app(self.driver, app_package)
+        self.login()
+        self.make_transaction()
+
+
+    # 👇 Các hàm tương tác UI thật sự bằng Appium + wait
+
+    def _click(self, element_id):
+        try:
+            element = WebDriverWait(self.driver, self.timeout).until(
+                EC.element_to_be_clickable((By.ID, element_id))
+            )
+            element.click()
+        except StaleElementReferenceException:
+            print("⚠️ Element bị stale, đang thử lại...")
+            time.sleep(1)
+            element = WebDriverWait(self.driver, self.timeout).until(
+                EC.element_to_be_clickable((By.ID, element_id))
+            )
+            element.click()
+
+
+    def _click_xpath(self, xpath_template, digit):
+        xpath = xpath_template.format(digit=digit)
+        WebDriverWait(self.driver, self.timeout).until(
+            EC.element_to_be_clickable((By.XPATH, xpath))
+        ).click()
+
+    def _set_element_text(self, element_id, text):
+        WebDriverWait(self.driver, self.timeout).until(
+            EC.presence_of_element_located((By.ID, element_id))
+        ).send_keys(text)
+
+    def _get_element_text(self, element_id):
+        element = WebDriverWait(self.driver, self.timeout).until(
+            EC.presence_of_element_located((By.ID, element_id))
+        )
+        return element.text
