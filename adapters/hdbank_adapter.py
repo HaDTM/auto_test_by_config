@@ -127,6 +127,8 @@ class HDBankAdapter:
         self.enter_pin("0000")
         self.confirm_pin()
 
+        self._click(self.config["element_ids"]["finger_btnSkip"])
+
         self.choose_to_basic()
         otp_basic = self.get_otp_from_app()
         result_basic = self.verify_otp("basic", user_id, otp_basic, "00000000")
@@ -218,21 +220,15 @@ class HDBankAdapter:
         restart_app(self.driver, app_package)
 
 
+    def test_upgrade_flow(self, user_id):
+        update_app(self.config["apk_v1_path"])
+        restart_app(self.driver, self.config["desired_caps"]["appPackage"])
+        self.dispatch_flow("register", user_id)
 
-    def test_upgrade_flow(self):
-        app_package = self.config["desired_caps"]["appPackage"]
-        apk_v1 = self.config["apk_v1_path"]
-        apk_v2 = self.config["apk_v2_path"]
+        update_app(self.config["apk_v2_path"])
+        restart_app(self.driver, self.config["desired_caps"]["appPackage"])
+        self.dispatch_flow("login", user_id)
 
-        update_app(apk_v1)
-        restart_app(self.driver, app_package)
-        self.login()
-        self.make_transaction()
-
-        update_app(apk_v2)
-        restart_app(self.driver, app_package)
-        self.login()
-        self.make_transaction()
 
 
     # 👇 Các hàm tương tác UI thật sự bằng Appium + wait

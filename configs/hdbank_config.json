@@ -15,6 +15,7 @@
         "continue_button":"com.hdbank.dihdbank:id/dialog_btnPositive",
         "number_pin_button_xpath":"//android.widget.Button[@text='{digit}']",
         "set_pin_button":"com.hdbank.dihdbank:id/setpin",
+        "finger_btnSkip":"com.hdbank.dihdbank:id/finger_btnSkip",
         "user_name_button":"com.hdbank.dihdbank:id/user_txtName1",
         "add_user_button":"com.hdbank.dihdbank:id/acbar_imgRight",
         "basic_tab_button": "com.hdbank.dihdbank:id/tabs_txtBasic",
@@ -34,12 +35,17 @@
   },
   "desired_caps": {
         "platformName": "Android",
-        "deviceName": "34495a5444593098",
+        "deviceName": "QV7809H1A6",
         "automationName": "UiAutomator2",
         "appPackage": "com.hdbank.dihdbank",
-        "appActivity": "mk.vpb.token.activitys.SplashActivity",
+        "appActivity": "com.hdbank.dihdbank.mk.vpb.token.activitys.SplashActivity",
         "noReset": true,
-        "newCommandTimeout": 300
+        "fullReset": false,
+        "newCommandTimeout": 300,
+        "appWaitActivity": "*",
+        "ignoreHiddenApiPolicyError": true,
+        "autoGrantPermissions": true,
+        "adbExecTimeout": 20000
         },
   "timeout": 20,
   "apk_v1_path": "apk/hd-1.4(19).apk",
