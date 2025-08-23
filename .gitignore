@@ -1,0 +1,19 @@
+# Bỏ qua file APK và thư mục chứa APK
+*.apk
+apk/
+
+# Bỏ qua file biên dịch Python
+*.pyc
+__pycache__/
+
+# Bỏ qua file cấu hình hệ thống (nếu có)
+.DS_Store
+Thumbs.db
+
+# Bỏ qua file log hoặc tạm thời
+*.log
+*.tmp
+
+# Nếu dùng môi trường ảo Python
+venv/
+.env/
