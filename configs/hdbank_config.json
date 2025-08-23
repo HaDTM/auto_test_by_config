@@ -48,6 +48,6 @@
         "adbExecTimeout": 20000
         },
   "timeout": 20,
-  "apk_v1_path": "apk/hd-1.4(19).apk",
-  "apk_v2_path": "apk/hd-1.5(20)16KBsize.apk"
+  "apk_v1_path": "apk/hdbank/hd-1.4(19).apk",
+  "apk_v2_path": "apk/hdbank/hd-1.5(20)16KBsize.apk"
 }

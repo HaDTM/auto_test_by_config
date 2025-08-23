@@ -33,12 +33,20 @@
   },
   "desired_caps": {
         "platformName": "Android",
-        "deviceName": "34495a5444593098",
+        "deviceName": "QV7809H1A6",
         "automationName": "UiAutomator2",
         "appPackage": "vn.acb.token",
-        "appActivity": "mk.vpb.token.activitys.RegisterActivity",
+        "appActivity": "vn.acb.token.activitys.RegisterActivity",
         "noReset": true,
-        "newCommandTimeout": 300
+        "fullReset": false,
+        "newCommandTimeout": 300,
+        "appWaitActivity": "*",
+        "ignoreHiddenApiPolicyError": true,
+        "autoGrantPermissions": true,
+        "adbExecTimeout": 20000
         },
-  "timeout": 10
+        
+  "timeout": 20,
+  "apk_v1_path": "apk/acb/old.apk",
+  "apk_v2_path": "apk/acb/new.apk"
 }

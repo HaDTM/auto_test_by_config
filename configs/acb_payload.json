@@ -2,8 +2,8 @@
   "activation": {
     "issuerName": "ACBank",
     "userID": "{userID}",
-    "userName": "userName 240701",
-    "customerName": "customerName 240701",
+    "userName": "HADTMTEST",
+    "customerName": "HADTMTEST",
     "customerTypeID": 1,
     "cifNumber": "0000000000000002",
     "phoneNumber": "0398448844",

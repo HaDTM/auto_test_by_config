@@ -4,15 +4,20 @@ from requests.auth import HTTPBasicAuth
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from utils.device_utils import restart_app, update_app
 
 from payloads.build_activation_payload import build_activation_payload
-from payloads.build_payload_otp import build_otpcr_payload, build_otp_payload
+from payloads.build_payload_otp import build_otp_payload, build_otpcr_payload
 from payloads.build_payload_transaction import call_api_create_transaction,build_headers
+from selenium.common.exceptions import StaleElementReferenceException
 
-class ABCBankAdapter:
+
+
+class ACBBankAdapter:
     def __init__(self, config):
         self.config = config
         self.driver = config["driver"]
+        caps = config["desired_caps"]
         self.timeout = config["timeout"]
 
     def activate(self, user_id):
@@ -43,7 +48,7 @@ class ABCBankAdapter:
         self._click(self.config["element_ids"]["set_pin_button"])
 
     def _fetch_activation_code(self, user_id):
-        payload = build_activation_payload(user_id)
+        payload = build_activation_payload(self.config, user_id)
         url = self.config["activation_code_url"]
         headers = build_headers(self.config)
         try:
@@ -87,10 +92,10 @@ class ABCBankAdapter:
         try:
             if type == "basic":
                 url = self.config["otp_basic_url"]
-                payload = build_otp_payload(user_id, otp_input, transaction_id)
+                payload = build_otp_payload( self.config, user_id, otp_input, transaction_id)
             elif type == "cr":
                 url = self.config["otp_advance_url"]
-                payload = build_otpcr_payload(user_id, otp_input, transaction_id)
+                payload = build_otpcr_payload( self.config,user_id, otp_input, transaction_id)
             else:
                 raise ValueError("Loại OTP không hợp lệ.")
             
@@ -121,6 +126,8 @@ class ABCBankAdapter:
         self.enter_pin("0000")
         self.enter_pin("0000")
         self.confirm_pin()
+
+        self._click(self.config["element_ids"]["finger_btnSkip"])
 
         self.choose_to_basic()
         otp_basic = self.get_otp_from_app()
@@ -207,12 +214,39 @@ class ABCBankAdapter:
             else:
                 print("❌ Số không hợp lệ. Nhập lại hộ cái.")
 
+# Hàm restart app, có thể dùng trong các trường hợp cần thiết
+    def restart_app_from_config(self):
+        app_package = self.config["desired_caps"]["appPackage"]
+        restart_app(self.driver, app_package)
+
+
+    def test_upgrade_flow(self, user_id):
+        update_app(self.config["apk_v1_path"])
+        restart_app(self.driver, self.config["desired_caps"]["appPackage"])
+        self.dispatch_flow("register", user_id)
+
+        update_app(self.config["apk_v2_path"])
+        restart_app(self.driver, self.config["desired_caps"]["appPackage"])
+        self.dispatch_flow("login", user_id)
+
+
 
     # 👇 Các hàm tương tác UI thật sự bằng Appium + wait
+
     def _click(self, element_id):
-        WebDriverWait(self.driver, self.timeout).until(
-            EC.element_to_be_clickable((By.ID, element_id))
-        ).click()
+        try:
+            element = WebDriverWait(self.driver, self.timeout).until(
+                EC.element_to_be_clickable((By.ID, element_id))
+            )
+            element.click()
+        except StaleElementReferenceException:
+            print("⚠️ Element bị stale, đang thử lại...")
+            time.sleep(1)
+            element = WebDriverWait(self.driver, self.timeout).until(
+                EC.element_to_be_clickable((By.ID, element_id))
+            )
+            element.click()
+
 
     def _click_xpath(self, xpath_template, digit):
         xpath = xpath_template.format(digit=digit)
