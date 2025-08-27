@@ -2,11 +2,11 @@ import json
 import time
 from bank_adapter_factory import BankAdapterFactory
 from utils.driver_init import ensure_app_installed, init_driver, grant_post_notification_permission
-from utils.device_utils import uninstall_app, is_app_installed, launch_app_once
+from utils.device_utils import uninstall_app, is_app_installed, launch_app_once, restart_app
 
 # ✅ Chỉ cần đổi dòng này là chạy bank khác
-BANK_NAME = "HDBank"
-USER_ID = "230801"
+BANK_NAME = "ACB"
+USER_ID = "270803"
 
 def load_config(bank_name):
     config_path = f"configs/{bank_name.lower()}_config.json"
@@ -16,7 +16,7 @@ def load_config(bank_name):
     return config
 
 def prepare_driver(config):
-    ensure_app_installed(config["apk_v1_path"], config["desired_caps"]["appPackage"])
+    ensure_app_installed(config["apk_v2_path"], config["desired_caps"]["appPackage"])
     launch_app_once(config["desired_caps"]["appPackage"])
     return init_driver(config["desired_caps"], config["timeout"])
 
@@ -35,9 +35,17 @@ def main():
         adapter = BankAdapterFactory.create_adapter(BANK_NAME, config)
 
         # 👉 Chạy luồng mong muốn
-        adapter.test_upgrade_flow(USER_ID)
+        #Luồng login
+        # adapter.dispatch_flow("login",USER_ID)
+        # restart_app(driver,config["desired_caps"]["appPackage"])
 
-        # 👉 Gỡ app sau khi test
+        #Luồng kích hoạt
+        adapter.dispatch_flow("register",USER_ID)
+
+
+        # adapter.test_upgrade_flow(USER_ID)
+
+        #👉 Gỡ app sau khi test
         if is_app_installed(package_name):
             uninstall_app(package_name)
             print(f"🗑️ Đã gỡ cài đặt ứng dụng: {package_name}")

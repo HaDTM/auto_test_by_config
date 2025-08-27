@@ -21,7 +21,7 @@
     "callbackUrl": "",
     "authTypeID": 1,
     "isOnline": 0,
-    "isPush": 1,
+    "isPush": 0,
     "notification": {
       "title": "Test_title",
       "body": "Test_body"

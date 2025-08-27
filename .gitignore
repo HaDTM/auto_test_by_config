@@ -17,3 +17,8 @@ Thumbs.db
 # Nếu dùng môi trường ảo Python
 venv/
 .env/
+
+# Bỏ qua file ảnh 
+*.png
+*.jpg
+

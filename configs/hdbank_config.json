@@ -35,7 +35,7 @@
   },
   "desired_caps": {
         "platformName": "Android",
-        "deviceName": "QV7809H1A6",
+        "deviceName": "34495a5444593098",
         "automationName": "UiAutomator2",
         "appPackage": "com.hdbank.dihdbank",
         "appActivity": "com.hdbank.dihdbank.mk.vpb.token.activitys.SplashActivity",

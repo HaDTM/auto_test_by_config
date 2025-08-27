@@ -13,7 +13,7 @@ from payloads.build_payload_transaction import call_api_create_transaction,build
 from selenium.common.exceptions import StaleElementReferenceException
 
 
-class ACBBankAdapter:
+class LPBankAdapter:
     def __init__(self, config):
         self.config = config
         self.driver = config["driver"]
@@ -21,12 +21,12 @@ class ACBBankAdapter:
         self.timeout = config["timeout"]
 
     def activate(self, user_id):
-        print(f"[INFO] UserID hiện tại: {user_id}")
-        self._click(self.config["element_ids"]["intro_btnStart"])
+        print(f"[INFO] Nhập user ID: {user_id}")
+        self._click(self.config["element_ids"]["intro_vi_lang"])
         time.sleep(1)  # Chờ animation
         self._click(self.config["element_ids"]["term_btnAgree"])
         time.sleep(1)
-
+        self._set_element_text(self.config["element_ids"]["user_id_input"], user_id)
 
         activation_code = self._fetch_activation_code(user_id)
         if not activation_code:
@@ -34,7 +34,7 @@ class ACBBankAdapter:
             return  # Dừng lại, không nhập mã và không đặt PIN
 
         print(f"[INFO] Nhập mã kích hoạt: {activation_code}")
-        self._set_element_text(self.config["element_ids"]["activation_code_input_xpath"], activation_code)
+        self._set_element_text(self.config["element_ids"]["activation_code_input_xpath"],(activation_code))
 
 
         self._click(self.config["element_ids"]["btn_confirm"])
@@ -44,10 +44,10 @@ class ACBBankAdapter:
         #     EC.presence_of_element_located((By.ID, self.config["element_ids"]["pin_screen_id"]))
         # )
         
-    def enter_pin(self, pin):
-        xpath_template = self.config["element_ids"]["number_pin_button_xpath"]
-        for digit in pin:
-            self._click_xpath(xpath_template, digit)
+    def enter_pin(self,pin_code):
+        print("[INFO] Nhập PIN: 000000")
+        for digit in pin_code:
+            self._click_xpath(self.config["element_ids"]["number_pin_button_xpath"], digit)
 
     def confirm_pin(self):
         self._click(self.config["element_ids"]["set_pin_button"])
@@ -125,8 +125,9 @@ class ACBBankAdapter:
     def activation_flow(self, user_id):
         self.activate(user_id)
 
-        self.enter_pin("111111")
-        self.enter_pin("111111")
+        self.enter_pin("00000")
+        self.enter_pin("000000")
+        self.confirm_pin()
 
         self._click(self.config["element_ids"]["finger_btnSkip"])
 
@@ -150,7 +151,7 @@ class ACBBankAdapter:
         }
 
     def login_flow(self, user_id):
-        self.enter_pin("111111")
+        self.enter_pin("000000")
         print("Login với pin")
         self.choose_to_basic()
         otp_basic = self.get_otp_from_app()
@@ -176,7 +177,7 @@ class ACBBankAdapter:
             "transaction_id": transaction_id
         }
 
-    def dispatch_flow(self, screen_name, user_id= None):
+    def dispatch_flow(self, screen_name, user_id):
         routes = {
             "login": self.login_flow,
             "register": self.activation_flow,
@@ -250,38 +251,19 @@ class ACBBankAdapter:
             element.click()
 
 
-    def _click_xpath(self, xpath_template, digit, timeout=None):
-        timeout = timeout or self.timeout
-        try:
-            xpath = xpath_template.format(digit=digit)
-            print(f"[DEBUG] Đang tìm và click vào xpath: {xpath}")
-            element = WebDriverWait(self.driver, timeout).until(
-                EC.element_to_be_clickable((By.XPATH, xpath))
-            )
-            element.click()
-            print(f"[INFO] Đã click vào số PIN: {digit}")
-        except Exception as e:
-            print(f"❌ Không click được vào số PIN '{digit}' với xpath '{xpath}' → {e}")
-            # Optional: chụp màn hình để debug
-            self.driver.save_screenshot(f"error_click_pin_{digit}_{int(time.time())}.png")
-
+    def _click_xpath(self, xpath_template, digit):
+        xpath = xpath_template.format(digit=digit)
+        WebDriverWait(self.driver, self.timeout).until(
+            EC.element_to_be_clickable((By.XPATH, xpath))
+        ).click()
 
     def _set_element_text(self, element_id, text):
         WebDriverWait(self.driver, self.timeout).until(
             EC.presence_of_element_located((By.ID, element_id))
         ).send_keys(text)
 
-    def _get_element_text(self, element_id, by=By.ID, timeout=None):
-        timeout = timeout or self.timeout
-        try:
-            print(f"[DEBUG] Đang tìm element: {element_id} bằng {by}")
-            element = WebDriverWait(self.driver, timeout).until(
-                EC.presence_of_element_located((by, element_id))
-            )
-            text = element.text
-            print(f"[INFO] Text lấy được từ element '{element_id}': {text}")
-            return text
-        except Exception as e:
-            print(f"❌ Không lấy được text từ element '{element_id}' → {e}")
-            return None
-
+    def _get_element_text(self, element_id):
+        element = WebDriverWait(self.driver, self.timeout).until(
+            EC.presence_of_element_located((By.ID, element_id))
+        )
+        return element.text

@@ -43,22 +43,29 @@ def get_connected_device_info():
     return info
 
 def grant_post_notification_permission(package_name):
-    # Lấy SDK version
-    result = subprocess.run(
-        ["adb", "shell", "getprop", "ro.build.version.sdk"],
-        capture_output=True, text=True
-    )
-    sdk_version = int(result.stdout.strip())
+    try:
+        # 🔍 Lấy SDK version
+        result = subprocess.run(
+            ["adb", "shell", "getprop", "ro.build.version.sdk"],
+            capture_output=True, text=True, check=True
+        )
+        sdk_version_str = result.stdout.strip()
+        sdk_version = int(sdk_version_str)
 
-    # Nếu Android 13 trở lên (SDK >= 33), thì cấp quyền
-    if sdk_version >= 33:
-        subprocess.run([
-            "adb", "shell", "pm", "grant",
-            package_name, "android.permission.POST_NOTIFICATIONS"
-        ])
-        print(f"✅ Đã cấp quyền POST_NOTIFICATIONS cho {package_name}")
-    else:
-        print(f"ℹ️ Thiết bị Android {sdk_version} không cần quyền POST_NOTIFICATIONS")
+        # ✅ Nếu Android 13 trở lên (SDK >= 33), thì cấp quyền
+        if sdk_version >= 33:
+            subprocess.run([
+                "adb", "shell", "pm", "grant",
+                package_name, "android.permission.POST_NOTIFICATIONS"
+            ], check=True)
+            print(f"✅ Đã cấp quyền POST_NOTIFICATIONS cho {package_name} (SDK {sdk_version})")
+        else:
+            print(f"ℹ️ Thiết bị Android {sdk_version} không cần quyền POST_NOTIFICATIONS")
+
+    except ValueError:
+        print(f"❌ Không thể chuyển đổi SDK version sang số nguyên: '{sdk_version_str}'")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Lỗi khi thực thi ADB: {e}")
 
 def init_driver(desired_caps, timeout):
     options = UiAutomator2Options()
