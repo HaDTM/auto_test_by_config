@@ -3,6 +3,7 @@
 from adapters.hdbank_adapter import HDBankAdapter
 from adapters.acb_adapter import ACBBankAdapter
 from adapters.lpbank_adapter import LPBankAdapter
+from adapters.shb_adapter import SHBAdapter
 # from adapters.tpbank_adapter import TPBankAdapter  # nếu sau này có thêm
 
 class BankAdapterFactory:
@@ -16,5 +17,7 @@ class BankAdapterFactory:
             return ACBBankAdapter(config)
         elif bank_name == "lpbank":
             return LPBankAdapter(config)
+        elif bank_name == "shbank":
+            return SHBAdapter(config)
         else:
             raise ValueError(f"[ERROR] Adapter chưa hỗ trợ cho bank: {bank_name}")

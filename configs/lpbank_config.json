@@ -1,5 +1,6 @@
 {
-  "bank_name": "Keypass",
+  "issuer_name": "Keypass",
+  "bank_name": "LPBank",
   "activation_code_url":"https://192.168.0.117:8414/keypass.ws/getActivationCode",
   "otp_basic_url": "https://192.168.0.117:8414/keypass.ws/verifyOTP",
   "otp_advance_url": "https://192.168.0.117:8414/keypass.ws/verifyOTPCR",
@@ -14,6 +15,8 @@
         "activation_code_input_xpath":"mk.lvpb.token:id/et_active_code",
         "btn_confirm":"mk.lvpb.token:id/btn_active",
         "number_pin_button_xpath":"//android.widget.Button[@text='{digit}']",
+        "btn_register":"mk.lvpb.token:id/btn_regis",
+        "set_pin_button":"mk.lvpb.token:id/dialog_btnPositive",
         "finger_btnSkip":"mk.lvpb.token:id/finger_btnSkip",
         "user_name_button":"mk.lvpb.token:id/user_next",
         "edit_user_button":"mk.lvpb.token:id/user_imgEdits",
@@ -22,7 +25,7 @@
         "challenge_code":"mk.lvpb.token:id/etChallenge",
         "advance_tab_button": "mk.lvpb.token:id/tabs_txtAdvance",
         "otp_show":"mk.lvpb.token:id/otp_txtCode",
-        "get_transaction_button":"mk.lvpb.token:id/trans_btnRetry",
+        "get_transaction_button":"mk.lvpb.token:id/trans_reload",
         "qr_code_button":"mk.lvpb.token:id/trans_btnQr",
         "setting_button":"mk.lvpb.token:id/acbar_imgRight",
         "back_button":"mk.lvpb.token:id/acbar_imgLeft",
@@ -35,7 +38,7 @@
   },
   "desired_caps": {
         "platformName": "Android",
-        "deviceName": "34495a5444593098",
+        "deviceName": "R5CR615Q8NR",
         "automationName": "UiAutomator2",
         "appPackage": "mk.lvpb.token",
         "appActivity": "mk.lvpb.token.activitys.RegisterActivity",
@@ -49,6 +52,6 @@
         },
         
   "timeout": 20,
-  "apk_v1_path": "apk/acb/old.apk",
-  "apk_v2_path": "apk/acb/new.apk"
+  "apk_v1_path": "apk/lpbank/old.apk",
+  "apk_v2_path": "apk/lpbank/new.apk"
 }
