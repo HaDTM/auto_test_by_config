@@ -39,6 +39,7 @@ class LPBankAdapter:
         print(f"[INFO] Nhập mã kích hoạt: {activation_code}")
         self._set_element_text(self.config["element_ids"]["activation_code_input_xpath"],(activation_code))
 
+        self._set_element_text(self.config["element_ids"]["sv_link"], "https://dev.mk.com.vn:18494/keypass.wsmobile/")
 
         self._click(self.config["element_ids"]["btn_confirm"])
 
@@ -109,7 +110,7 @@ class LPBankAdapter:
         time.sleep(1)
     
     def choose_to_advance(self):
-        time.sleep(1)
+        time.sleep(5)
         self._click(self.config["element_ids"]["get_transaction_button"])
 
     def get_otp_from_app(self):
@@ -164,7 +165,7 @@ class LPBankAdapter:
     def activation_flow(self, user_id):
         self.activate(user_id)
 
-        self.enter_pin("00000")
+        self.enter_pin("000000")
         self.enter_pin("000000")
 
         self.confirm_pin()
@@ -172,7 +173,7 @@ class LPBankAdapter:
         self._click(self.config["element_ids"]["finger_btnSkip"])
 
         transaction_id = self.create_transaction(user_id)
-
+        
         self.choose_to_advance()
 
         otp_cr = self.get_otp_from_app()

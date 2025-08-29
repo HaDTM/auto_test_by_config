@@ -19,7 +19,6 @@
     "transactionData": "",
     "challenge": "",
     "callbackUrl": "",
-    "authTypeID": 1,
     "isOnline": 0,
     "isPush": 0,
     "notification": {

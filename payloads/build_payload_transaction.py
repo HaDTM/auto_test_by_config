@@ -6,24 +6,68 @@ import json
 def generate_transaction_id_uuid():
     return str(uuid.uuid4())
 
+# def build_create_transaction_payload(user_id, transaction_id, config):
+#     # Kiểm tra nếu ngân hàng là SHBank
+#     if config.get("issuer_name") == "SHBank":
+#         # Đọc payload từ file JSON
+#         with open(config["payload_file"], "r", encoding="utf-8") as f:
+#             payload_template = json.load(f)
+
+#         # Lấy payload cho create_transaction
+#         payload = payload_template["create_transaction"]
+
+#         # Thay thế các placeholder bằng giá trị thực tế
+#         payload["userID"] = user_id
+#         payload["transactionID"] = transaction_id
+
+#         # # Nếu cần, tùy chỉnh thêm các trường khác
+#         # if not payload["transactionData"]:
+#         #     payload["transactionData"] = f"{transaction_id}|818794922918113218389848863|TRAN THI THANH KIEU - 1234567890123456789|1585456000|VND"
+#     elif config.get("issuer_name") == "Keypass":
+#         payload = {
+#             "issuerName": "Keypass",
+#             "userID": user_id,
+#             "transactionID": transaction_id,
+#             "transactionTypeID": 1,
+#             "transactionData": "",
+#             "challenge": "",
+#             "callbackUrl": "",
+#             "isOnline": 0,
+#             "isPush": 1,
+#             "eSignerTypeID": 0,
+#             "channelID": 1,
+#             "notification": {
+#                 "title": "New Transfer",
+#                 "body": "You have a new transfer. Please check it!"
+#             }
+#         }
+#     else:
+#         # Logic mặc định cho các ngân hàng khác
+#         payload = {
+#             "issuerName": config.get("issuer_name", "DefaultBank"),
+#             "userID": user_id,
+#             "transactionID": transaction_id,
+#             "transactionTypeID": 10,
+#             "transactionData": f"{transaction_id}|818794922918113218389848863|TRAN THI THANH KIEU - 1234567890123456789|1585456000|VND",
+#             "challenge": "",
+#             "callbackUrl": "",
+#             "isOnline": 0,
+#             "isPush": 0,
+#             "notification": None,
+#             "eSignerTypeID": 12,
+#             "channelID": 0
+#         }
+
+#     return payload
+
 def build_create_transaction_payload(user_id, transaction_id, config):
-    # Kiểm tra nếu ngân hàng là SHBank
-    if config.get("issuer_name") == "SHBank":
-        # Đọc payload từ file JSON
+    if config.get("payload_file"):
         with open(config["payload_file"], "r", encoding="utf-8") as f:
             payload_template = json.load(f)
-
-        # Lấy payload cho create_transaction
         payload = payload_template["create_transaction"]
-
-        # Thay thế các placeholder bằng giá trị thực tế
         payload["userID"] = user_id
         payload["transactionID"] = transaction_id
-
-        # # Nếu cần, tùy chỉnh thêm các trường khác
-        # if not payload["transactionData"]:
-        #     payload["transactionData"] = f"{transaction_id}|818794922918113218389848863|TRAN THI THANH KIEU - 1234567890123456789|1585456000|VND"
-
+        # Nếu có các trường động khác thì thay thế tiếp ở đây
     else:
         # Logic mặc định cho các ngân hàng khác
         payload = {
@@ -40,7 +84,6 @@ def build_create_transaction_payload(user_id, transaction_id, config):
             "eSignerTypeID": 12,
             "channelID": 0
         }
-
     return payload
 
 def build_headers(config):
@@ -64,13 +107,14 @@ def build_headers(config):
 
 def call_api_create_transaction(config, user_id):
     transaction_id = generate_transaction_id_uuid()
-    payload = build_create_transaction_payload(user_id, transaction_id)
+    payload = build_create_transaction_payload(user_id, transaction_id, config)
+    print(f"[DEBUG] Payload gửi lên: {payload}")
     headers = build_headers(config)
 
     url = config["transaction_url"]
     response = requests.post(url, json=payload, headers=headers, verify=False)
     response.raise_for_status()
-
+    
     data = response.json()
     print(f"✅ Kết quả createTransaction:\n{json.dumps(data, indent=2, ensure_ascii=False)}")
     return data.get("transactionID")

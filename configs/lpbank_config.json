@@ -6,6 +6,7 @@
   "otp_advance_url": "https://192.168.0.117:8414/keypass.ws/verifyOTPCR",
   "transaction_url": "https://192.168.0.117:8414/keypass.ws/createTransaction",
   "requires_basic_auth": false,
+  "payload_file": "configs/lpbank_payload.json",
   "auth_user": "user1",
   "auth_password": "p@ssw0rd#2025",
   "element_ids": {
@@ -13,6 +14,7 @@
         "term_btnAgree":"mk.lvpb.token:id/term_btnAgree",
         "user_id_input": "mk.lvpb.token:id/et_user_id",
         "activation_code_input_xpath":"mk.lvpb.token:id/et_active_code",
+        "sv_link": "mk.lvpb.token:id/svLink",
         "btn_confirm":"mk.lvpb.token:id/btn_active",
         "number_pin_button_xpath":"//android.widget.Button[@text='{digit}']",
         "btn_register":"mk.lvpb.token:id/btn_regis",
@@ -38,7 +40,7 @@
   },
   "desired_caps": {
         "platformName": "Android",
-        "deviceName": "R5CR615Q8NR",
+        "deviceName": "51130DLAQ003XL",
         "automationName": "UiAutomator2",
         "appPackage": "mk.lvpb.token",
         "appActivity": "mk.lvpb.token.activitys.RegisterActivity",
