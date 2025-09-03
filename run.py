@@ -5,8 +5,8 @@ from utils.driver_init import ensure_app_installed, init_driver, grant_post_noti
 from utils.device_utils import uninstall_app, is_app_installed, launch_app_once, restart_app
 
 # ✅ Chỉ cần đổi dòng này là chạy bank khác
-BANK_NAME = "LPBank"
-USER_ID = "LPB290802"
+BANK_NAME = "BankName"
+USER_ID = "BankNameUserID"
 
 def load_config(bank_name):
     config_path = f"configs/{bank_name.lower()}_config.json"

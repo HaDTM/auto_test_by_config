@@ -165,8 +165,9 @@ class LPBankAdapter:
     def activation_flow(self, user_id):
         self.activate(user_id)
 
-        self.enter_pin("000000")
-        self.enter_pin("000000")
+        pin = self.config.get("setPIN")
+        self.enter_pin(pin)
+        self.enter_pin(pin)
 
         self.confirm_pin()
 
@@ -187,7 +188,8 @@ class LPBankAdapter:
         }
 
     def login_flow(self, user_id):
-        self.enter_pin("000000")
+        pin = self.config.get("setPIN")
+        self.enter_pin(pin)
         print("Login với pin")
 
         transaction_id = self.create_transaction(user_id)

@@ -137,8 +137,9 @@ class SHBAdapter:
     def activation_flow(self, user_id):
         self.activate(user_id)
 
-        self.enter_pin("0000")
-        self.enter_pin("0000")
+        pin = self.config.get("setPIN")
+        self.enter_pin(pin)
+        self.enter_pin(pin)
 
         self._click(self.config["element_ids"]["finger_btnSkip"])
 
@@ -170,7 +171,9 @@ class SHBAdapter:
         }
 
     def login_flow(self, user_id):
-        self.enter_pin("0000")
+
+        pin = self.config.get("setPIN")
+        self.enter_pin(pin)
         print("Login với pin")
         time.sleep(3)
         

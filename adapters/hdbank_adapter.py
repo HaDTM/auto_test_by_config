@@ -121,10 +121,12 @@ class HDBankAdapter:
 
 
     def activation_flow(self, user_id):
+
         self.activate(user_id)
 
-        self.enter_pin("0000")
-        self.enter_pin("0000")
+        pin = self.config.get("setPIN")
+        self.enter_pin(pin)
+        self.enter_pin(pin)
         self.confirm_pin()
 
         self._click(self.config["element_ids"]["finger_btnSkip"])
@@ -149,7 +151,8 @@ class HDBankAdapter:
         }
 
     def login_flow(self, user_id):
-        self.enter_pin("0000")
+        pin = self.config.get("setPIN")
+        self.enter_pin(pin)
         print("Login với pin")
         self.choose_to_basic()
         otp_basic = self.get_otp_from_app()

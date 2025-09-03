@@ -123,10 +123,11 @@ class ACBBankAdapter:
 
 
     def activation_flow(self, user_id):
+        pin = self.config.get("setPIN")
         self.activate(user_id)
 
-        self.enter_pin("111111")
-        self.enter_pin("111111")
+        self.enter_pin(pin)
+        self.enter_pin(pin)
 
         self._click(self.config["element_ids"]["finger_btnSkip"])
 
@@ -150,7 +151,8 @@ class ACBBankAdapter:
         }
 
     def login_flow(self, user_id):
-        self.enter_pin("111111")
+        pin = self.config.get("setPIN")
+        self.enter_pin(pin)
         print("Login với pin")
         self.choose_to_basic()
         otp_basic = self.get_otp_from_app()

@@ -6,6 +6,8 @@
   "otp_advance_url": "https://keypassapis.mk.com.vn/keypass.ws/verifyOTPCR",
   "transaction_url": "https://keypassapis.mk.com.vn/keypass.ws/createTransaction",
   "requires_basic_auth": true,
+  "payload_file": "configs/acb_payload.json",
+  "setPIN": "000000",
   "auth_user": "keypassAPIApp",
   "auth_password": "p@ssw0rd#2024",
   "element_ids": {
