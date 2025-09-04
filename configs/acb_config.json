@@ -35,19 +35,19 @@
         "confirm_quit_button":"vn.acb.token:id/confirm_btnPositive"
   },
   "desired_caps": {
-        "platformName": "Android",
-        "deviceName": "R5CR615Q8NR",
-        "automationName": "UiAutomator2",
-        "appPackage": "vn.acb.token",
-        "appActivity": "vn.acb.token.activitys.RegisterActivity",
-        "noReset": true,
-        "fullReset": false,
-        "newCommandTimeout": 300,
-        "appWaitActivity": "*",
-        "ignoreHiddenApiPolicyError": true,
-        "autoGrantPermissions": true,
-        "adbExecTimeout": 20000
-        },
+      "platformName": "Android",
+      "deviceName": "",
+      "automationName": "UiAutomator2",
+      "appPackage": "vn.acb.token",
+      "appActivity": "vn.acb.token.activitys.RegisterActivity",
+      "noReset": true,
+      "fullReset": false,
+      "newCommandTimeout": 300,
+      "appWaitActivity": "*",
+      "ignoreHiddenApiPolicyError": true,
+      "autoGrantPermissions": true,
+      "adbExecTimeout": 20000
+},
         
   "timeout": 20,
   "apk_v1_path": "apk/acb/old.apk",

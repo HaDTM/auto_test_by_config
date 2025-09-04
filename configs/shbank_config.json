@@ -7,7 +7,7 @@
   "transaction_url": "http://192.168.0.186:8411/keypass.ws/createTransaction",
   "requires_basic_auth": true,
   "payload_file": "configs/shbank_payload.json",
-  "setPIN": "0000",
+  "setPIN": "1111",
   "auth_user": "esb.user3",
   "auth_password": "P@ssw0rd#2024",
   "success_keyword": "Đồng bộ thành công ứng dụng VPBank Smart OTP",

@@ -7,7 +7,7 @@
   "transaction_url": "https://192.168.0.186:8405/keypass.ws/createTransaction",
   "requires_basic_auth": true,
   "payload_file": "configs/hdbank_payload.json",
-  "setPIN": "0000",
+  "setPIN": "1111",
   "auth_user": "user1",
   "auth_password": "p@ssw0rd#2025",
   "sync_status_id": "com.hdbank.dihdbank:id/tv_sync_status",
@@ -38,7 +38,7 @@
   },
   "desired_caps": {
         "platformName": "Android",
-        "deviceName": "34495a5444593098",
+        "deviceName": "",
         "automationName": "UiAutomator2",
         "appPackage": "com.hdbank.dihdbank",
         "appActivity": "com.hdbank.dihdbank.mk.vpb.token.activitys.SplashActivity",

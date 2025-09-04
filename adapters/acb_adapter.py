@@ -121,6 +121,25 @@ class ACBBankAdapter:
         time.sleep(2)
         print("[INFO] Đồng bộ OTP xong.")
 
+    def add_new_user(self):
+        # Click vào nút "Thêm người dùng"
+        self._click(self.config["element_ids"]["add_user_button"])
+        print("[INFO] Đã click vào nút 'Thêm người dùng'.")
+
+        # Gọi hàm activate với user_id là "NewUser"
+        user_id = "NewUser"
+        print(f"[INFO] UserID hiện tại: {user_id}")
+
+        activation_code = self._fetch_activation_code(user_id)
+        if not activation_code:
+            print("[ERROR] Không lấy được mã kích hoạt.")
+            return  # Dừng lại, không nhập mã và không đặt PIN
+        time.sleep(3)
+
+        print(f"[INFO] Nhập mã kích hoạt: {activation_code} cho {user_id}")
+
+        self._input_activation_code(activation_code)
+        print(f"[INFO] Người dùng mới {user_id} đã được thêm thành công.")
 
     def activation_flow(self, user_id):
         pin = self.config.get("setPIN")
@@ -178,14 +197,24 @@ class ACBBankAdapter:
             "transaction_id": transaction_id
         }
 
-    def dispatch_flow(self, screen_name, user_id= None):
+    def add_user_flow(self, user_id):
+        pin = self.config.get("setPIN")
+        self.enter_pin(pin)
+        print("Login với pin")
+        time.sleep(3)
+
+        # Add new user
+        self.add_new_user()
+        return {"status": "New user added"}
+
+    def dispatch_flow(self, screen_name, user_id):
         routes = {
             "login": self.login_flow,
             "register": self.activation_flow,
-            "update": self.test_upgrade_flow
+            "update": self.test_upgrade_flow,
+            "adduser": self.add_user_flow
             # có thể mở rộng: "update": self.update_user_info
         }
-
         if screen_name in routes:
             print(f"[INFO] Bắt đầu luồng: {screen_name}")
             return routes[screen_name](user_id)
@@ -225,13 +254,41 @@ class ACBBankAdapter:
 
 
     def test_upgrade_flow(self, user_id):
-        update_app(self.config["apk_v1_path"])
-        restart_app(self.driver, self.config["desired_caps"]["appPackage"])
-        self.dispatch_flow("register", user_id)
+        try:
+            # Cập nhật ứng dụng lên phiên bản 1
+            print(f"[INFO] Đang cập nhật ứng dụng lên phiên bản 1 từ: {self.config['apk_v1_path']}")
+            update_app(self.config["apk_v1_path"])
+            print("[INFO] Cập nhật ứng dụng phiên bản 1 thành công.")
 
-        update_app(self.config["apk_v2_path"])
-        restart_app(self.driver, self.config["desired_caps"]["appPackage"])
-        self.dispatch_flow("login", user_id)
+            # Khởi động lại ứng dụng phiên bản 1
+            print("[INFO] Đang khởi động lại ứng dụng phiên bản 1...")
+            restart_app(self.driver, self.config["desired_caps"]["appPackage"])
+            print("[INFO] Ứng dụng phiên bản 1 đã được khởi động lại.")
+
+            # Thực hiện luồng "register" trên phiên bản 1
+            print("[INFO] Bắt đầu luồng 'register' trên phiên bản 1.")
+            self.dispatch_flow("register", user_id)
+
+            # Cập nhật ứng dụng lên phiên bản 2
+            print(f"[INFO] Đang cập nhật ứng dụng lên phiên bản 2 từ: {self.config['apk_v2_path']}")
+            update_app(self.config["apk_v2_path"])
+            print("[INFO] Cập nhật ứng dụng phiên bản 2 thành công.")
+
+            # Khởi động lại ứng dụng phiên bản 2
+            print("[INFO] Đang khởi động lại ứng dụng phiên bản 2...")
+            restart_app(self.driver, self.config["desired_caps"]["appPackage"])
+            print("[INFO] Ứng dụng phiên bản 2 đã được khởi động lại.")
+
+            # Thực hiện luồng "login" trên phiên bản 2
+            print("[INFO] Bắt đầu luồng 'login' trên phiên bản 2.")
+            self.dispatch_flow("login", user_id)
+
+        except Exception as e:
+            print(f"[ERROR] Lỗi trong quá trình kiểm thử nâng cấp ứng dụng: {e}")
+            # Optional: Chụp màn hình để debug
+            self.driver.save_screenshot(f"error_upgrade_flow_{int(time.time())}.png")
+            raise
+
 
 
 

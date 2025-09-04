@@ -41,7 +41,7 @@ class SHBAdapter:
         # )
         
     def enter_pin(self,pin_code):
-        print("[INFO] Nhập PIN: 0000")
+        print(f"[INFO] Nhập PIN: {pin_code}")
         for digit in pin_code:
             self._click_xpath(self.config["element_ids"]["number_pin_button_xpath"], digit)
 
@@ -133,6 +133,25 @@ class SHBAdapter:
         status_text = self._get_element_text(self.config["element_ids"]["tv_sync_status"])
         return self.config["success_keyword"] in status_text
 
+    def add_new_user(self):
+        # Click vào nút "Thêm người dùng"
+        self._click(self.config["element_ids"]["add_user_button"])
+        print("[INFO] Đã click vào nút 'Thêm người dùng'.")
+
+        # Gọi hàm activate với user_id là "NewUser"
+        user_id = "NewUser"
+        print(f"[INFO] UserID hiện tại: {user_id}")
+
+        activation_code = self._fetch_activation_code(user_id)
+        if not activation_code:
+            print("[ERROR] Không lấy được mã kích hoạt.")
+            return  # Dừng lại, không nhập mã và không đặt PIN
+        time.sleep(3)
+
+        print(f"[INFO] Nhập mã kích hoạt: {activation_code} cho {user_id}")
+
+        self._input_activation_code(activation_code)
+        print(f"[INFO] Người dùng mới {user_id} đã được thêm thành công.")
 
     def activation_flow(self, user_id):
         self.activate(user_id)
@@ -178,7 +197,7 @@ class SHBAdapter:
         time.sleep(3)
         
         self._click(self.config["element_ids"]["back_button"])
-        
+
         self.choose_to_basic()
         otp_basic = self.get_otp_from_app()
         result_basic = self.verify_otp("basic", user_id, otp_basic, "00000000")
@@ -203,11 +222,22 @@ class SHBAdapter:
             # "transaction_id": transaction_id
         }
 
+    def add_user_flow(self, user_id):
+        pin = self.config.get("setPIN")
+        self.enter_pin(pin)
+        print("Login với pin")
+        time.sleep(3)
+
+        # Add new user
+        self.add_new_user()
+        return {"status": "New user added"}
+
     def dispatch_flow(self, screen_name, user_id):
         routes = {
             "login": self.login_flow,
             "register": self.activation_flow,
-            "update": self.test_upgrade_flow
+            "update": self.test_upgrade_flow,
+            "adduser": self.add_user_flow
             # có thể mở rộng: "update": self.update_user_info
         }
         if screen_name in routes:
