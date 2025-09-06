@@ -1,0 +1,44 @@
+{
+  "activation": {
+    "issuerName": "VietinBank",
+    "userID": "{user_id}",
+    "aidVersion": "99",
+    "customerName": "TESTER HADTM",
+    "userName": "TESTER HADTM",
+    "cifNumber": "",
+    "phoneNumber": "0966624504",
+    "branchID": "001",
+    "customerTypeID": 1,
+    "email": ""
+  },
+  "create_transaction": {
+    "issuerName": "VietinBank",
+    "userID": "{user_id}",
+    "transactionID": "{transaction_id}",
+    "transactionTypeID": 1,
+    "transactionData": "1",
+    "challenge": "",
+    "isPush": 0,
+    "isOnline": 0,
+    "callbackUrl":"https://192.168.0.132:18080/keypass.demo/bankAPI/pushSignCallback2",
+    "eSignerTypeID": 7,
+    "channelID": 0,
+    "notification": {
+        "title": "New Transfer",
+        "body": "Test automation"
+    }
+  },
+  "otp": {
+    "issuerName": "VietinBank",
+    "userID": "{user_id}",
+    "otp": "00{otp}",
+    "transactionID": "{transaction_id}"
+  },
+  "otpcr": {
+    "issuerName": "VietinBank",
+    "userID": "{user_id}",
+    "otp": "09{otp}",
+    "transactionID": "{transaction_id}"
+  }
+}
+

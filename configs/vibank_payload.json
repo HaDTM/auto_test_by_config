@@ -1,0 +1,42 @@
+{
+  "activation": {
+    "issuerName": "VIBank",
+    "userID": "{userID}",
+    "userName": "HADTMTEST",
+    "customerName": "HADTMTEST",
+    "customerTypeID": 1,
+    "cifNumber": "0000000000000002",
+    "phoneNumber": "0398448844",
+    "email": "test1001@gmail.com",
+    "branchID": "001",
+    "aidVersion": "99"
+  },
+  "create_transaction": {
+    "issuerName": "VIBank",
+    "userID": "{user_id}",
+    "transactionID": "{transaction_id}",
+    "transactionTypeID": 99,
+    "transactionData": "",
+    "eSignerTypeID": 0
+  },
+  "getOCRAQuestion": {
+    "issuerName": "VIBank",
+    "userID": "{user_id}",
+    "aidVersion": "04",
+    "sysChallenge": "",
+    "transactionID": "{transaction_id}"
+  },
+  "otp": {
+    "issuerName": "VIBank",
+    "userID": "{user_id}",
+    "otp": "00{otp}",
+    "transactionID": "{transaction_id}"
+  },
+  "otpcr": {
+    "issuerName": "VIBank",
+    "userID": "{user_id}",
+    "otp": "04{otp}",
+    "transactionID": "{transaction_id}"
+  }
+}
+

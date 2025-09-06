@@ -1,0 +1,35 @@
+{
+  "activation": {
+    "issuerName": "NCBBank",
+    "userID": "{userID}",
+    "userName": "HADTMTEST",
+    "customerName": "HADTMTEST",
+    "customerTypeID": 1,
+    "cifNumber": "0000000000000002",
+    "phoneNumber": "0398448844",
+    "email": "test1001@gmail.com",
+    "branchID": "001",
+    "aidVersion": "99"
+  },
+  "create_transaction": {
+    "issuerName": "NCBBank",
+    "userID": "{user_id}",
+    "transactionID": "{transaction_id}",
+    "transactionTypeID": 1,
+    "eSignerTypeID": 0
+
+  },
+  "otp": {
+    "issuerName": "NCBBank",
+    "userID": "{user_id}",
+    "otp": "00{otp}",
+    "transactionID": "{transaction_id}"
+  },
+  "otpcr": {
+    "issuerName": "NCBBank",
+    "userID": "{user_id}",
+    "otp": "09{otp}",
+    "transactionID": "{transaction_id}"
+  }
+}
+

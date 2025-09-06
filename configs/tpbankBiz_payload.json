@@ -1,0 +1,45 @@
+{
+  "activation": {
+    "issuerName": "Keypass",
+    "userID": "{userID}",
+    "userName": "HADTMTEST",
+    "aidVersion":"99",
+    "customerName": "HADTMTEST",
+    "cifNumber":"234567890123456789",
+    "phoneNumber":"0903123321",
+    "branchID":"001",
+    "email":"test01@gmail.com.vn",
+    "customerTypeID":2,
+    "mobileAppId":2,
+    "channelId":2,
+    "userType":"1"
+  },
+  "create_transaction": {
+    "issuerName": "Keypass",
+    "userID": "{user_id}",
+    "transactionID": "{transaction_id}",
+    "transactionTypeID": 1,
+    "transactionData": "{transaction_id}||500.50#$|03669839202",
+    "authTypeID": 1,
+    "isOnline": 0,
+    "isPush": 0,
+    "notification": {
+      "title": "Test_title",
+      "body": "Test_body"
+    },
+    "eSignerTypeID": 3
+  },
+  "otp": {
+    "issuerName": "Keypass",
+    "userID": "{user_id}",
+    "otp": "00{otp}",
+    "transactionID": "{transaction_id}"
+  },
+  "otpcr": {
+    "issuerName": "Keypass",
+    "userID": "{user_id}",
+    "otp": "09{otp}",
+    "transactionID": "{transaction_id}"
+  }
+}
+

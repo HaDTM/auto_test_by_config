@@ -52,7 +52,27 @@ def build_headers(config):
         headers["Custom-Header"] = "SHBank-Specific-Value"  # Ví dụ: Thêm header tùy chỉnh cho SHBank
 
     return headers
+#Chỗ này là của thằng getOCRAQuestion
+def build_getOCRAQuestion_payload(config, user_id, transaction_id):
+    return {
+        "issuerName": config.get("issuer_name", "DefaultBank"),
+        "userID": user_id,
+        "aidVersion": "04",
+        "sysChallenge": "",
+        "transactionID": transaction_id
+    }
 
+def call_api_getOCRAQuestion(config, user_id, transaction_id):
+    payload = build_getOCRAQuestion_payload(config, user_id, transaction_id)
+    headers = build_headers(config)
+
+    url = config["transaction_url"]
+    response = requests.post(url, json=payload, headers=headers, verify=False)
+    response.raise_for_status()
+
+    data = response.json()
+    print(f"✅ Kết quả getOCRAQuestion:\n{json.dumps(data, indent=2, ensure_ascii=False)}")
+    return data.get("challenge")
 
 def call_api_create_transaction(config, user_id):
     transaction_id = generate_transaction_id_uuid()

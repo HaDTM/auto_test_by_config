@@ -1,26 +1,30 @@
 import requests
 import json
-import base64
+import urllib3
 
-url = "https://192.168.0.117:8414/keypass.ws/getActivationCode" 
+# Tắt cảnh báo SSL
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+url = "https://192.168.0.112:8445/keypass.ws.tpb/getActivationCode"
 
 payload = {
     "issuerName": "Keypass",
-    "userID": "HADTMTEST",
-    "userName": "HADTMTEST",
-    "customerName": "HADTMTEST",
-    "customerTypeID": 1,
-    "cifNumber": "0000000000000002",
-    "phoneNumber": "0398448844",
-    "email": "test1001@gmail.com",
+    "userID": "0001",
+    "aidVersion": "99",
+    "userName": "0001",
+    "cifNumber": "234567890123456789",
+    "phoneNumber": "0903123321",
     "branchID": "001",
-    "aidVersion": "99"
+    "email": "test01@gmail.com.vn",
+    "customerTypeID": 2,
+    "customerName": "Tap Doan MK",
+    "mobileAppId": 2,
+    "channelId": 2,
+    "userType": "1"
 }
 
-# auth = base64.b64encode(b"user1:p@ssw0rd#2025").decode("utf-8")
 headers = {
     "Content-Type": "application/json",
-    # "Authorization": f"Basic {auth}"
 }
 
 try:
@@ -35,4 +39,3 @@ try:
 
 except requests.exceptions.RequestException as e:
     print(f"[ERROR] Lỗi khi gửi yêu cầu: {e}")
-
