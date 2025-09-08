@@ -26,7 +26,7 @@ class BankAdapterFactory:
             return SHBAdapter(config)
         elif bank_name == "vibank":
             return VIBAdapter(config)
-        elif bank_name == "tpbank_biz":
+        elif bank_name == "tpbankbiz":
             return TPBankBIZAdapter(config)
         elif bank_name == "ssi":
             return SSIAdapter(config)

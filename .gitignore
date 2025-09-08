@@ -15,6 +15,7 @@ Thumbs.db
 *.tmp
 
 # Nếu dùng môi trường ảo Python
+myvenv/
 venv/
 .env/
 

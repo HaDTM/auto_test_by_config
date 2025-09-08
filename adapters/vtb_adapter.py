@@ -37,6 +37,8 @@ class VTBAdapter:
         print(f"[INFO] Nhập mã kích hoạt: {activation_code}")
         self._input_activation_code(activation_code)
 
+        self._click(self.config["element_ids"]["active_btnActive"])
+
         # Nếu cần: chờ confirm popup hoặc next screen rồi mới đặt PIN
         # WebDriverWait(self.driver, self.timeout).until(
         #     EC.presence_of_element_located((By.ID, self.config["element_ids"]["pin_screen_id"]))
@@ -153,9 +155,13 @@ class VTBAdapter:
         self._click(self.config["element_ids"]["finger_btnSkip"])
 
         time.sleep(3)
-        self.choose_to_advance()
+        # self._click(self.config["element_ids"]["back_button"])
         
         transaction_id = self.create_transaction(user_id)
+
+        self.choose_to_advance()
+
+        self._click(self.config["element_ids"]["error_message"])
         
         self._click(self.config["element_ids"]["get_transaction_button"])
 
@@ -184,11 +190,10 @@ class VTBAdapter:
         
         self._click(self.config["element_ids"]["back_button"])
 
+        transaction_id = self.create_transaction(user_id)
         self.choose_to_advance()
         
-        transaction_id = self.create_transaction(user_id)
-        
-        self._click(self.config["element_ids"]["get_transaction_button"])
+        # self._click(self.config["element_ids"]["get_transaction_button"])
 
         self._click(self.config["element_ids"]["sign_transaction"])
 

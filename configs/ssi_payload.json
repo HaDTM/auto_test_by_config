@@ -1,6 +1,6 @@
 {
   "activation": {
-    "issuerName": "Keypass",
+    "issuerName": "SSIHOSE",
     "userID": "{userID}",
     "userName": "HADTMTEST",
     "customerName": "HADTMTEST",
@@ -12,7 +12,7 @@
     "aidVersion": "99"
   },
   "create_transaction": {
-    "issuerName": "Keypass",
+    "issuerName": "SSIHOSE",
     "userID": "{user_id}",
     "transactionID": "{transaction_id}",
     "transactionTypeID": 1,
@@ -29,13 +29,13 @@
     "channelID": 1
   },
   "otp": {
-    "issuerName": "Keypass",
+    "issuerName": "SSIHOSE",
     "userID": "{user_id}",
     "otp": "00{otp}",
     "transactionID": "{transaction_id}"
   },
   "otpcr": {
-    "issuerName": "Keypass",
+    "issuerName": "SSIHOSE",
     "userID": "{user_id}",
     "otp": "09{otp}",
     "transactionID": "{transaction_id}"

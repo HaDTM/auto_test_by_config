@@ -175,19 +175,19 @@ class VIBAdapter:
         result_basic = self.verify_otp("basic", user_id, otp_basic, "00000000")
         print(f"[RESULT] Xác thực OTP thường: {result_basic}")
 
-        transaction_id, challenge_code = self.create_transaction(user_id)
+        # transaction_id, challenge_code = self.create_transaction(user_id)
 
-        self.choose_to_advance(challenge_code)
-        otp_cr = self.get_otp_from_app()
-        print(f"[DEBUG] Transaction ID để xác thực nâng cao: {transaction_id}")
-        result_cr = self.verify_otp("cr", user_id, otp_cr, transaction_id)
-        print(f"[RESULT] Xác thực OTP nâng cao: {result_cr}")
+        # self.choose_to_advance(challenge_code)
+        # otp_cr = self.get_otp_from_app()
+        # print(f"[DEBUG] Transaction ID để xác thực nâng cao: {transaction_id}")
+        # result_cr = self.verify_otp("cr", user_id, otp_cr, transaction_id)
+        # print(f"[RESULT] Xác thực OTP nâng cao: {result_cr}")
 
         return {
             "otp_basic": result_basic,
-            "otp_advanced": result_cr,
-            "transaction_id": transaction_id,
-            "challenge_code": challenge_code
+            # "otp_advanced": result_cr,
+            # "transaction_id": transaction_id,
+            # "challenge_code": challenge_code
         }
 
     def login_flow(self, user_id):
