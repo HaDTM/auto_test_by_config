@@ -6,7 +6,7 @@
   "otp_advance_url": "https://192.168.0.112:8445/keypass.ws.tpb/verifyOTPCR",
   "transaction_url": "https://192.168.0.112:8445/keypass.ws.tpb/createTransaction",
   "requires_basic_auth": false,
-  "payload_file": "configs/tpbankbiz_payload.json",
+  "payload_file": "configs/tpbankBiz_payload.json",
   "setPIN": "1235",
   "auth_user": "user1",
   "auth_password": "p@ssw0rd#2025",

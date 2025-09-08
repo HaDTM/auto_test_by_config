@@ -53,6 +53,9 @@ class TPBankBIZAdapter:
         payload = build_activation_payload(self.config, user_id)
         url = self.config["activation_code_url"]
         headers = build_headers(self.config)
+        print(f"[DEBUG] URL: {url}")
+        print(f"[DEBUG] Payload: {json.dumps(payload, indent=2)}")
+        print(f"[DEBUG] Headers: {headers}")
         try:
             response = requests.post(url, json=payload, headers=headers, verify=False, timeout=self.timeout)
             response.raise_for_status()

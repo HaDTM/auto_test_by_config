@@ -6,7 +6,7 @@
   "otp_advance_url": "https://192.168.0.117:8415/keypass.ws/verifyOTPCR",
   "transaction_url": "https://192.168.0.117:8415/keypass.ws/createTransaction",
   "requires_basic_auth": false,
-  "payload_file": "configs/ncbank_payload.json",
+  "payload_file": "configs/ncbbank_payload.json",
   "setPIN": "000000",
   "auth_user": "user1",
   "auth_password": "p@ssw0rd#2025",

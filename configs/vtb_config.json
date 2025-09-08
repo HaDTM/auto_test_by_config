@@ -11,6 +11,7 @@
   "auth_user": "user1",
   "auth_password": "p@ssw0rd#2025",
   "element_ids": {
+        "click_password": "vn.acb.token:id/login_layoutValid",
         "login_btnConfirm": "vn.acb.token:id/login_btnConfirm",
         "intro_vi_lang":"vn.acb.token:id/lang_imgVn",
         "term_btnAgree":"vn.acb.token:id/term_btnAgree",

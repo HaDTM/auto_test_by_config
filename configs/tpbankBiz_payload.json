@@ -19,8 +19,7 @@
     "userID": "{user_id}",
     "transactionID": "{transaction_id}",
     "transactionTypeID": 1,
-    "transactionData": "{transaction_id}||500.50#$|03669839202",
-    "authTypeID": 1,
+    "transactionData": "{transaction_id}|500.50#$|03669839202",
     "isOnline": 0,
     "isPush": 0,
     "notification": {

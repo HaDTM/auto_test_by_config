@@ -34,7 +34,10 @@ class NCBAdapter:
             return  # Dừng lại, không nhập mã và không đặt PIN
         time.sleep(3)
         print(f"[INFO] Nhập mã kích hoạt: {activation_code}")
-        self._input_activation_code(activation_code)
+
+        self._click(self.config["element_ids"]["activation_code_input_xpath"])
+
+        self._set_element_text(self.config["element_ids"]["activation_code_input_xpath"], activation_code)
 
         self._click(self.config["element_ids"]["btn_confirm"])
 

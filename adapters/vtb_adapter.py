@@ -181,19 +181,20 @@ class VTBAdapter:
         }
 
     def login_flow(self, user_id):
-
+        self._click(self.config["element_ids"]["click_password"])
         pin = self.config.get("setPIN")
         self.enter_pin(pin)
         self._click(self.config["element_ids"]["login_btnConfirm"])
         print("Login với pin")
         time.sleep(3)
-        
-        self._click(self.config["element_ids"]["back_button"])
 
         transaction_id = self.create_transaction(user_id)
+
         self.choose_to_advance()
+
+        self._click(self.config["element_ids"]["error_message"])
         
-        # self._click(self.config["element_ids"]["get_transaction_button"])
+        self._click(self.config["element_ids"]["get_transaction_button"])
 
         self._click(self.config["element_ids"]["sign_transaction"])
 

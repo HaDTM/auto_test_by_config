@@ -22,19 +22,21 @@ class TLSAdapter(HTTPAdapter):
 session = requests.Session()
 session.mount("https://", TLSAdapter(ssl.PROTOCOL_TLSv1_2))
 
-url = "https://192.168.0.186:8406/keypass.ws/getActivationCode"
+url = "https://192.168.0.112:8445/keypass.ws.tpb/createTransaction"
 
 payload = {
-    "issuerName": "VietinBank",
-    "userID": "21232343",
-    "aidVersion": "99",
-    "customerName": "TESTER HADTM",
-    "userName": "TESTER HADTM",
-    "cifNumber": "",
-    "phoneNumber": "0966624504",
-    "branchID": "001",
-    "customerTypeID": 1,
-    "email": ""
+  "issuerName": "Keypass",
+  "userID": "080901TPBB",
+  "transactionID": "080901TPBB",
+  "transactionTypeID": 1,
+  "transactionData": "080901TPBB|500.50#$|03669839202",
+  "isOnline": 0,
+  "isPush": 0,
+  "notification": {
+    "title": "Test_title",
+    "body": "Test_body"
+  },
+  "eSignerTypeID": 3
 }
 
 headers = {

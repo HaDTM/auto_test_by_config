@@ -5,7 +5,7 @@ from adapters.acb_adapter import ACBBankAdapter
 from adapters.lpbank_adapter import LPBankAdapter
 from adapters.ncb_adapter import NCBAdapter
 from adapters.shb_adapter import SHBAdapter
-from adapters.tpbank_biz_adapter import TPBankBIZAdapter
+from adapters.tpbankbiz_adapter import TPBankBIZAdapter
 from adapters.vib_adapter import VIBAdapter
 from adapters.ssi_adapter import SSIAdapter
 from adapters.vtb_adapter import VTBAdapter
