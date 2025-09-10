@@ -16,7 +16,8 @@
     "userID": "{user_id}",
     "transactionID": "{transaction_id}",
     "transactionTypeID": 1,
-    "eSignerTypeID": 0
+    "eSignerTypeID": 0,
+    "transactionData": ""
 
   },
   "otp": {

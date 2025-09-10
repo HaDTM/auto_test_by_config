@@ -78,6 +78,7 @@ class NCBAdapter:
     
     def choose_to_advance(self, challenge_code):
         self._click(self.config["element_ids"]["advance_tab_button"])
+        self._click(self.config["element_ids"]["challenge_input"])
         self._set_element_text(self.config["element_ids"]["challenge_input"], challenge_code)
 
     def get_otp_from_app(self):
@@ -179,60 +180,57 @@ class NCBAdapter:
 
         self._click(self.config["element_ids"]["btn_register"])
 
+        self._click(self.config["element_ids"]["set_pin_button"])
+
         self._click(self.config["element_ids"]["finger_btnSkip"])
 
         time.sleep(3)
 
-        self._click(self.config["element_ids"]["back_button"])
-
-        
-        self.choose_to_basic()
         otp_basic = self.get_otp_from_app()
         result_basic = self.verify_otp("basic", user_id, otp_basic, "00000000")
         print(f"[RESULT] Xác thực OTP thường: {result_basic}")
 
-        transaction_id, challenge_code = self.create_transaction(user_id)
+        # transaction_id, challenge_code = self.create_transaction(user_id)
 
-        self.choose_to_advance(challenge_code)
-        otp_cr = self.get_otp_from_app()
-        print(f"[DEBUG] Transaction ID để xác thực nâng cao: {transaction_id}")
-        result_cr = self.verify_otp("cr", user_id, otp_cr, transaction_id)
-        print(f"[RESULT] Xác thực OTP nâng cao: {result_cr}")
+        # self.choose_to_advance(challenge_code)
+        # otp_cr = self.get_otp_from_app()
+        # print(f"[DEBUG] Transaction ID để xác thực nâng cao: {transaction_id}")
+        # result_cr = self.verify_otp("cr", user_id, otp_cr, transaction_id)
+        # print(f"[RESULT] Xác thực OTP nâng cao: {result_cr}")
 
         return {
             "otp_basic": result_basic,
-            "otp_advanced": result_cr,
-            "transaction_id": transaction_id,
-            "challenge_code": challenge_code
+            # "otp_advanced": result_cr,
+            # "transaction_id": transaction_id,
+            # "challenge_code": challenge_code
         }
 
     def login_flow(self, user_id):
 
         pin = self.config.get("setPIN")
         self.enter_pin(pin)
+        self._click(self.config["element_ids"]["btn_login"])
+
         print("Login với pin")
         time.sleep(3)
-        
-        self._click(self.config["element_ids"]["back_button"])
 
-        self.choose_to_basic()
         otp_basic = self.get_otp_from_app()
         result_basic = self.verify_otp("basic", user_id, otp_basic, "00000000")
         print(f"[RESULT] Xác thực OTP thường: {result_basic}")
 
-        transaction_id, challenge_code = self.create_transaction(user_id)
+        # transaction_id, challenge_code = self.create_transaction(user_id)
 
-        self.choose_to_advance(challenge_code)
-        otp_cr = self.get_otp_from_app()
-        print(f"[DEBUG] Transaction ID để xác thực nâng cao: {transaction_id}")
-        result_cr = self.verify_otp("cr", user_id, otp_cr, transaction_id)
-        print(f"[RESULT] Xác thực OTP nâng cao: {result_cr}")
+        # self.choose_to_advance(challenge_code)
+        # otp_cr = self.get_otp_from_app()
+        # print(f"[DEBUG] Transaction ID để xác thực nâng cao: {transaction_id}")
+        # result_cr = self.verify_otp("cr", user_id, otp_cr, transaction_id)
+        # print(f"[RESULT] Xác thực OTP nâng cao: {result_cr}")
 
         return {
             "otp_basic": result_basic,
-            "otp_advanced": result_cr,
-            "transaction_id": transaction_id,
-            "challenge_code": challenge_code
+            # "otp_advanced": result_cr,
+            # "transaction_id": transaction_id,
+            # "challenge_code": challenge_code
         }
 
     def add_user_flow(self, user_id):

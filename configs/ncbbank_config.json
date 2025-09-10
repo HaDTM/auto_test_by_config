@@ -17,6 +17,7 @@
         "btn_confirm":"com.ncb.token:id/active_btnConfirm",
         "number_pin_button_xpath":"//android.widget.Button[@text='{digit}']",
         "btn_register":"com.ncb.token:id/btn_regis",
+        "btn_login":"com.ncb.token:id/btn_login",
         "set_pin_button":"com.ncb.token:id/confirm_btnNegative",
         "finger_btnSkip":"com.ncb.token:id/finger_btnSkip",
         "user_name_button":"com.ncb.token:id/user_txtAbove",
