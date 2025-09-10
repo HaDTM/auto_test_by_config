@@ -71,8 +71,9 @@ class VIBAdapter:
         self._click(self.config["element_ids"]["basic_tab_button"])
     
     def choose_to_advance(self, challenge_code):
-        self._set_element_text(self.config["element_ids"]["challenge_input"], challenge_code)
         self._click(self.config["element_ids"]["advance_tab_button"])
+        self._set_element_text(self.config["element_ids"]["challenge_input"], challenge_code)
+        self._click(self.config["element_ids"]["get_transaction_button"])
 
     def get_otp_from_app(self):
         print("[INFO] Đang lấy OTP từ giao diện app...")
@@ -96,19 +97,28 @@ class VIBAdapter:
             if type == "basic":
                 url = self.config["otp_basic_url"]
                 payload = build_otp_payload( self.config, user_id, otp_input, transaction_id)
+                print(payload)
             elif type == "cr":
                 url = self.config["otp_advance_url"]
                 payload = build_otpcr_payload( self.config,user_id, otp_input, transaction_id)
+                print(payload)
             else:
                 raise ValueError("Loại OTP không hợp lệ.")
             
             headers = build_headers(self.config)
             response = requests.post(url, json=payload, headers=headers, timeout=self.timeout, verify=False)
             response.raise_for_status()
+
             return response.json()
+        except requests.exceptions.HTTPError as e:
+            if response.status_code == 500:
+                print("[WARNING] Server trả về lỗi 500, bỏ qua và tiếp tục...")
+                return None
+            else:
+                raise
         except Exception as e:
-            print(f"[ERROR] Xác thực OTP thất bại: {e}")
-            return {}
+            print(f"[ERROR] Lỗi khác: {e}")
+            return None
 
     def create_transaction(self, user_id):
         transaction_id = generate_transaction_id_uuid()
@@ -125,7 +135,6 @@ class VIBAdapter:
         print(f"✅ Kết quả createTransaction:\n{json.dumps(data, indent=2, ensure_ascii=False)}")
 
         # Lấy transactionID và challengeCode từ response
-        transaction_id = data.get("transactionID")
         challenge_code = data.get("challengeCode")
 
         print(f"[INFO] Transaction ID: {transaction_id}")
@@ -175,19 +184,19 @@ class VIBAdapter:
         result_basic = self.verify_otp("basic", user_id, otp_basic, "00000000")
         print(f"[RESULT] Xác thực OTP thường: {result_basic}")
 
-        # transaction_id, challenge_code = self.create_transaction(user_id)
+        transaction_id, challenge_code = self.create_transaction(user_id)
 
-        # self.choose_to_advance(challenge_code)
-        # otp_cr = self.get_otp_from_app()
-        # print(f"[DEBUG] Transaction ID để xác thực nâng cao: {transaction_id}")
-        # result_cr = self.verify_otp("cr", user_id, otp_cr, transaction_id)
-        # print(f"[RESULT] Xác thực OTP nâng cao: {result_cr}")
+        self.choose_to_advance(challenge_code)
+        otp_cr = self._get_element_text(self.config["element_ids"]["otp_advance_show"])
+        print(f"[DEBUG] Transaction ID để xác thực nâng cao: {transaction_id}")
+        result_cr = self.verify_otp("cr", user_id, otp_cr, transaction_id)
+        print(f"[RESULT] Xác thực OTP nâng cao: {result_cr}")
 
         return {
             "otp_basic": result_basic,
-            # "otp_advanced": result_cr,
-            # "transaction_id": transaction_id,
-            # "challenge_code": challenge_code
+            "otp_advanced": result_cr,
+            "transaction_id": transaction_id,
+            "challenge_code": challenge_code
         }
 
     def login_flow(self, user_id):
