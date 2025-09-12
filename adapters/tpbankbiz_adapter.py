@@ -161,6 +161,10 @@ class TPBankBIZAdapter:
         print(f"[INFO] Người dùng mới {user_id} đã được thêm thành công.")
 
     def activation_flow(self, user_id):
+        # Cấp quyền nếu có popup hiện lên
+        time.sleep(1)
+        self._click(self.config["element_ids"]["permission_allow_button"])
+        time.sleep(1)
         self.activate(user_id)
 
         pin = self.config.get("setPIN")
@@ -178,6 +182,7 @@ class TPBankBIZAdapter:
         print(f"[RESULT] Xác thực OTP thường: {result_basic}")
 
         transaction_id = self.create_transaction(user_id)
+        self._click(self.config["element_ids"]["back_button"])
 
         self.choose_to_advance()
 
@@ -203,22 +208,17 @@ class TPBankBIZAdapter:
         self.enter_pin(pin)
         print("Login với pin")
         time.sleep(3)
-        
-        self._click(self.config["element_ids"]["back_button"])
 
         self.choose_to_basic()
-
-        self.close_popup()
 
         otp_basic = self.get_otp_from_app()
         result_basic = self.verify_otp("basic", user_id, otp_basic, "00000000")
         print(f"[RESULT] Xác thực OTP thường: {result_basic}")
 
         transaction_id = self.create_transaction(user_id)
+        self._click(self.config["element_ids"]["back_button"])
 
         self.choose_to_advance()
-        
-        self.close_popup()
 
         otp_cr = self.get_otp_from_app()
         print(f"[DEBUG] Transaction ID để xác thực nâng cao: {transaction_id}")
@@ -233,6 +233,8 @@ class TPBankBIZAdapter:
             "otp_advanced": result_cr,
             "transaction_id": transaction_id
         }
+    
+
     def add_user_flow(self, user_id):
         pin = self.config.get("setPIN")
         self.enter_pin(pin)

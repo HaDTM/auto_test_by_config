@@ -11,6 +11,7 @@
   "auth_user": "user1",
   "auth_password": "p@ssw0rd#2025",
   "element_ids": {
+        "permission_allow_button":"com.android.permissioncontroller:id/permission_allow_button",
         "choose_vn_lang_button":"vn.tpb.token.enterprise:id/lang_txtSelectVN",
         "agree_button":"vn.tpb.token.enterprise:id/top_btnRight",
         "activation_code_input_xpath":"vn.tpb.token.enterprise:id/active_txtCode",
